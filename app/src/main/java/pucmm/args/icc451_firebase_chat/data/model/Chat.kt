@@ -1,9 +1,10 @@
 package pucmm.args.icc451_firebase_chat.data.model
 
 data class Chat(
-	var id: Long,
-	var members: Pair<Long, Long>,
-	var lastMessage: String,
-	var lastMessageTimestamp: Long,
-	var lastMessageUserId: Long
+	val id: Long,
+	val membersIDs: Set<Long>,
+	val lastReadTimestamps: Map<Long, Long>,
+	val lastMessage: String,
+	val lastMessageTimestamp: Long,
+	val lastMessageUserId: Long
 )

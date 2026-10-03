@@ -1,8 +1,9 @@
 package pucmm.args.icc451_firebase_chat.data.model
 
 data class Message(
-	var id: Long = 0,
-	var senderId: Long = 0,
-	var text: String = "",
-	var timestamp: Long = 0
+	val id: Long = 0,
+	val chatId: Long = 0,
+	val senderId: Long = 0,
+	val text: String = "",
+	val timestamp: Long = 0
 )
