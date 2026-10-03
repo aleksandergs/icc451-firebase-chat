@@ -1,10 +1,11 @@
-package pucmm.args.icc451_firebase_chat
+package pucmm.args.icc451_firebase_chat.ui.main
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import pucmm.args.icc451_firebase_chat.R
 
 class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
