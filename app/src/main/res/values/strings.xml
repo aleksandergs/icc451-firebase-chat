@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">Icc451-firebase-chat</string>
+    <string name="app_full_name">Icc451-firebase-chat</string>
+    <string name="app_name">Chat-451</string>
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="login_subtitle">Bienvenido de nuevo</string>
+    <string name="register_title">Registrarse</string>
+    <string name="register_subtitle">Crea tu cuenta para acceder a la App</string>
+    <string name="hint_email">email@example.com</string>
+    <string name="hint_password">********</string>
+    <string name="hint_nick">Nombre de usuario</string>
+    <string name="hint_repeat_password">Repetir contraseña</string>
+    <string name="action_login">Iniciar Sesión</string>
+    <string name="action_register">Crear Cuenta</string>
+    <string name="action_logout">Cerrar Sesión</string>
+    <string name="go_to_register">¿No tienes cuenta? Regístrate</string>
+    <string name="go_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="email_required_error">El correo electrónico es obligatorio</string>
+    <string name="email_invalid_error">Ingresa un correo electrónico válido</string>
+    <string name="password_required_error">La contraseña es obligatoria</string>
+    <string name="password_short_error">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="password_mismatch_error">Las contraseñas no coinciden</string>
+    <string name="nick_required_error">El nombre de usuario es obligatorio</string>
+    <string name="nick_invalid_error">El nombre de usuario solo puede contener letras, números, guiones y puntos</string>
+    <string name="invalid_credentials_error">Correo o contraseña incorrectos</string>
+    <string name="email_in_use_error">Ya existe una cuenta con ese correo</string>
+    <string name="weak_password_error">La contraseña es demasiado débil</string>
+    <string name="network_error">Error de conexión. Verifica tu internet</string>
+    <string name="user_not_found_error">No existe una cuenta con ese correo</string>
+    <string name="permission_error">No tienes permisos para realizar esta acción</string>
+    <string name="unknown_error">Ocurrió un error inesperado. Intenta de nuevo</string>
 </resources>
