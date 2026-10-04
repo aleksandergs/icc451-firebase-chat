@@ -14,6 +14,11 @@
     <string name="action_logout">Cerrar Sesión</string>
     <string name="go_to_register">¿No tienes cuenta? Regístrate</string>
     <string name="go_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="title_chats">Chats</string>
+    <string name="title_users">Usuarios</string>
+    <string name="action_back">Volver</string>
+    <string name="hint_message">Escribe un mensaje</string>
+    <string name="action_send">Enviar</string>
     <string name="email_required_error">El correo electrónico es obligatorio</string>
     <string name="email_invalid_error">Ingresa un correo electrónico válido</string>
     <string name="password_required_error">La contraseña es obligatoria</string>
