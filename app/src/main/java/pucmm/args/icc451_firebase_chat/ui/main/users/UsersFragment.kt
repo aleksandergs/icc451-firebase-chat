@@ -1,48 +1,27 @@
 package pucmm.args.icc451_firebase_chat.ui.main.users
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.databinding.FragmentUsersBinding
+import pucmm.args.icc451_firebase_chat.ui.base.BaseFragment
 
-class UsersFragment : Fragment() {
+class UsersFragment : BaseFragment<FragmentUsersBinding>() {
+
 	private val viewModel: UsersViewModel by viewModels()
 	private val userAdapter = UsersAdapter()
 
-	private var _binding: FragmentUsersBinding? = null
-	private val binding get() = _binding!!
+	override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentUsersBinding.inflate(inflater, container, false)
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-		_binding = FragmentUsersBinding.inflate(inflater, container, false)
-		return binding.root
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
+	override fun setUpViews() {
 		binding.usersRecyclerView.adapter = userAdapter
 		viewModel.loadUsers()
-
-		viewLifecycleOwner.lifecycleScope.launch {
-			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-				viewModel.uiState.collect { render(it) }
-			}
-		}
+		collectWhileStarted(viewModel.uiState) { render(it) }
 	}
 
 	private fun render(state: UsersUiState) {
 		userAdapter.submitList(state.users)
 		binding.loadingSpinner.visibility = if (state.isLoading || state.users.isEmpty()) View.VISIBLE else View.GONE
-	}
-
-	override fun onDestroyView() {
-		super.onDestroyView()
-		_binding = null
 	}
 }

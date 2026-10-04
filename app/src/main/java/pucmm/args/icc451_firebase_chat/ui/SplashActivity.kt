@@ -1,31 +1,26 @@
 package pucmm.args.icc451_firebase_chat.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
 import pucmm.args.icc451_firebase_chat.databinding.ActivitySplashBinding
 import pucmm.args.icc451_firebase_chat.ui.auth.AuthActivity
+import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
 import pucmm.args.icc451_firebase_chat.ui.main.MainActivity
 import kotlin.time.Duration.Companion.milliseconds
 
-class SplashActivity : AppCompatActivity() {
+@SuppressLint("CustomSplashScreen")
+class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
-	override fun onCreate(savedInstanceState: android.os.Bundle?) {
+	override fun inflateBinding(inflater: LayoutInflater) = ActivitySplashBinding.inflate(inflater)
+
+	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		enableEdgeToEdge()
-		val binding = ActivitySplashBinding.inflate(layoutInflater)
-		setContentView(binding.root)
-		ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-			val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-			view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-			insets
-		}
 
 		lifecycleScope.launch {
 			delay(1000.milliseconds)
