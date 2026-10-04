@@ -10,7 +10,7 @@
     android:paddingBottom="12dp">
 
     <TextView
-        android:id="@+id/nameText"
+        android:id="@+id/nickText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -31,7 +31,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceBodyMedium"
-        app:layout_constraintTop_toBottomOf="@id/nameText"
+        app:layout_constraintTop_toBottomOf="@id/nickText"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="john@example.com" />
 

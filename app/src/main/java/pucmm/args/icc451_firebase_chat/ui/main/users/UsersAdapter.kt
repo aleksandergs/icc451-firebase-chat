@@ -32,7 +32,7 @@ class UsersAdapter : Adapter<UsersAdapter.UserViewHolder>() {
 	) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(user: User) {
-			binding.nameText.text = user.nickname
+			binding.nickText.text = user.nickname
 			binding.emailText.text = user.email
 		}
 	}

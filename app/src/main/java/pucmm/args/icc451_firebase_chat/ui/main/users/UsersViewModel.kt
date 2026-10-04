@@ -8,24 +8,34 @@ import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.data.repository.UserRepository
 
+data class UsersUiState(
+	val users: List<User> = emptyList(),
+	val isLoading: Boolean = false,
+)
+
 class UsersViewModel(
 	private val userRepository: UserRepository = UserRepository()
 ) : ViewModel() {
 
-	private val _users = MutableStateFlow<List<User>>(emptyList())
-	val users = _users.asStateFlow()
+	private val _uiState = MutableStateFlow(UsersUiState())
+	val uiState = _uiState.asStateFlow()
 
 	fun loadUsers() {
 		viewModelScope.launch {
-			_users.value = userRepository.getAllUsers()
+			_uiState.value = _uiState.value.copy(isLoading = true)
+			val users = userRepository.getAllUsers()
+			_uiState.value = _uiState.value.copy(users = users, isLoading = false)
 		}
 	}
 
 	fun getUser(id: Long) {
 		viewModelScope.launch {
+			_uiState.value = _uiState.value.copy(isLoading = true)
 			val user = userRepository.getUser(id)
-			user?.let {
-				_users.value = listOf(it)
+			_uiState.value = if (user != null) {
+				_uiState.value.copy(users = listOf(user), isLoading = false)
+			} else {
+				_uiState.value.copy(isLoading = false)
 			}
 		}
 	}

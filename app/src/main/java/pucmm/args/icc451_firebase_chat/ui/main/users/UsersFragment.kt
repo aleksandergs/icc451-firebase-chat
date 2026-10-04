@@ -19,7 +19,7 @@ class UsersFragment : Fragment() {
 	private var _binding: FragmentUsersBinding? = null
 	private val binding get() = _binding!!
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		_binding = FragmentUsersBinding.inflate(inflater, container, false)
 		return binding.root
 	}
@@ -27,19 +27,22 @@ class UsersFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		binding.usersRecyclerView.adapter = userAdapter
-		binding.loadingSpinner.visibility = View.VISIBLE
 		viewModel.loadUsers()
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-				launch {
-					viewModel.users.collect { freshUsers ->
-						userAdapter.submitList(freshUsers)
-						binding.loadingSpinner.visibility = View.GONE
-					}
-				}
+				viewModel.uiState.collect { render(it) }
 			}
 		}
+	}
 
+	private fun render(state: UsersUiState) {
+		userAdapter.submitList(state.users)
+		binding.loadingSpinner.visibility = if (state.isLoading || state.users.isEmpty()) View.VISIBLE else View.GONE
+	}
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
 	}
 }
