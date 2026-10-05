@@ -18,6 +18,7 @@
     <string name="title_users">Usuarios</string>
     <string name="action_back">Volver</string>
     <string name="hint_message">Escribe un mensaje</string>
+    <string name="empty_message_error">No puedes enviar mensajes vacios</string>
     <string name="action_send">Enviar</string>
     <string name="action_retry">Reintentar</string>
     <string name="empty_chats">No tienes conversaciones todavía</string>
@@ -36,4 +37,13 @@
     <string name="user_not_found_error">No existe una cuenta con ese correo</string>
     <string name="permission_error">No tienes permisos para realizar esta acción</string>
     <string name="unknown_error">Ocurrió un error inesperado. Intenta de nuevo</string>
+    <string name="image_message_preview">Vista previa de la imagen</string>
+    <string name="action_attach_image">Adjuntar imagen</string>
+    <string name="action_remove_image">Quitar imagen</string>
+    <string name="image_only_message">[Imagen]</string>
+    <string name="action_download_image">Descargar imagen</string>
+    <string name="action_close_image">Cerrar imagen</string>
+    <string name="image_saved">Imagen guardada en la galería</string>
+    <string name="image_save_error">No se pudo guardar la imagen</string>
+    <string name="media_album_name" translatable="false">Chat-451</string>
 </resources>

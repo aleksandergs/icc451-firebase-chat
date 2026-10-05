@@ -42,6 +42,7 @@ dependencies {
 	implementation(libs.androidx.lifecycle.viewmodel)
 	implementation(libs.androidx.lifecycle.livedata)
 	implementation(libs.androidx.fragment.ktx)
+	implementation(libs.coil)
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.appcompat)

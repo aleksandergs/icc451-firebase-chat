@@ -28,47 +28,91 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/inputRow"
+        app:layout_constraintBottom_toTopOf="@id/previewRow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:listitem="@layout/item_message" />
 
     <LinearLayout
-        android:id="@+id/inputRow"
+        android:id="@+id/previewRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/inputRow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/previewImage"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:contentDescription="@string/image_message_preview"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageButton
+            android:id="@+id/removeImageButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_remove_image"
+            android:src="@drawable/ic_close"
+            app:tint="?attr/colorControlNormal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inputRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/messageInputLayout"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <ImageButton
+            android:id="@+id/attachImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_attach_image"
+            android:src="@drawable/ic_image"
+            app:tint="?attr/colorPrimary" />
+
+        <EditText
+            android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:hint="@string/hint_message">
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:hint="@string/hint_message"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="4"
+            android:minHeight="44dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:textSize="16sp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/messageEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSend"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLines="4" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/action_send" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_send"
+            android:contentDescription="@string/action_send"
+            app:tint="?attr/colorPrimary"/>
 
     </LinearLayout>
 

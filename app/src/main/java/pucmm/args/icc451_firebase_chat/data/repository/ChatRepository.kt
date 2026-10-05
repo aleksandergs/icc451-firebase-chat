@@ -3,6 +3,8 @@ package pucmm.args.icc451_firebase_chat.data.repository
 import kotlinx.coroutines.delay
 import pucmm.args.icc451_firebase_chat.data.model.Chat
 import pucmm.args.icc451_firebase_chat.data.model.Message
+import pucmm.args.icc451_firebase_chat.data.model.MessageType
+import pucmm.args.icc451_firebase_chat.utils.EnumUtils.messageType
 import kotlin.time.Duration.Companion.milliseconds
 
 class ChatRepository {
@@ -57,13 +59,15 @@ class ChatRepository {
 		}
 	}
 
-	suspend fun sendMessage(chatId: String, senderId: String, text: String): Message {
+	suspend fun sendMessage(chatId: String, senderId: String, text: String, imageURL: String? = null): Message {
 		delay(200.milliseconds)
-		return addMessage(chats.first { it.id == chatId }, senderId, text)
+		return addMessage(chats.first { it.id == chatId }, senderId, text, imageURL)
 	}
 
-	private fun addMessage(chat: Chat, senderId: String, text: String): Message {
-		val message = Message((messages.size + 1).toString(), chat.id, senderId, text, System.currentTimeMillis())
+	private fun addMessage(chat: Chat, senderId: String, text: String, imageURL: String? = null): Message {
+		val type = messageType(text, imageURL)
+		val message = Message((messages.size + 1).toString(), chat.id, senderId, text,
+			type, imageURL, System.currentTimeMillis())
 		messages += message
 
 		val index = chats.indexOfFirst { it.id == chat.id }

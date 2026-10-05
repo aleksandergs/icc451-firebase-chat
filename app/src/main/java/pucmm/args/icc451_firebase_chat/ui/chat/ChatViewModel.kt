@@ -1,5 +1,6 @@
 package pucmm.args.icc451_firebase_chat.ui.chat
 
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.Chat451App
@@ -37,13 +38,17 @@ class ChatViewModel(
 		}
 	}
 
-	fun sendMessage(text: String) {
-		if (text.isBlank()) return
+	fun sendMessage(text: String, imageUrl: String?) {
 		val chatId = currentState.chatId ?: return
+
+		if (text.isBlank() && imageUrl == null) {
+			updateState { it.copy(errorMessage = R.string.empty_message_error) }
+			return
+		}
 
 		viewModelScope.launch {
 			try {
-				val message = chatRepository.sendMessage(chatId, currentUserId, text)
+				val message = chatRepository.sendMessage(chatId, currentUserId, text.trim(), imageUrl)
 				updateState { it.copy(messages = it.messages + message) }
 			} catch (e: Exception) {
 				updateState { it.copy(errorMessage = R.string.network_error) }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.databinding.ItemChatBinding
 import pucmm.args.icc451_firebase_chat.utils.TimeUtils
 
@@ -36,7 +37,10 @@ class ChatsAdapter(
 
 		fun bind(chat: ChatItem) {
 			binding.nickText.text = chat.nickname
-			binding.lastMessageText.text = chat.lastMessage
+			// Un último mensaje de solo imagen no tiene texto
+			binding.lastMessageText.text = chat.lastMessage.ifBlank {
+				binding.root.context.getString(R.string.image_only_message)
+			}
 			binding.timeText.text = TimeUtils.formatTimestamp(chat.timestamp)
 			binding.root.setOnClickListener { onChatClick(chat) }
 		}
