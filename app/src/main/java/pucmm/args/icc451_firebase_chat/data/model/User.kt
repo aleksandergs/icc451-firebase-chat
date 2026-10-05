@@ -4,4 +4,5 @@ data class User(
 	val id: String = "",
 	val nickname: String = "",
 	val email: String = "",
+	val fcmToken: String? = null
 )

@@ -9,6 +9,7 @@ import pucmm.args.icc451_firebase_chat.data.model.User
 internal fun User.toMap() = mapOf(
 	"nickname" to nickname,
 	"email" to email,
+	"fcmToken" to fcmToken
 )
 
 internal fun DocumentSnapshot.toUser(): User? = runCatching {
@@ -16,6 +17,7 @@ internal fun DocumentSnapshot.toUser(): User? = runCatching {
 		id = id,
 		nickname = getString("nickname").orEmpty(),
 		email = getString("email").orEmpty(),
+		fcmToken = getString("fcmToken").orEmpty(),
 	)
 }.getOrNull()
 
