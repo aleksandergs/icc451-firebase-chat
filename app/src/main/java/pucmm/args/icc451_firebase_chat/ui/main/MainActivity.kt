@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.databinding.ActivityMainBinding
+import pucmm.args.icc451_firebase_chat.ui.auth.logOut
 import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
 import pucmm.args.icc451_firebase_chat.ui.main.chats.ChatsFragment
 import pucmm.args.icc451_firebase_chat.ui.main.users.UsersFragment
@@ -18,6 +19,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		binding.toolbar.setOnMenuItemClickListener { item ->
+			when (item.itemId) {
+				R.id.action_logout -> {
+					logOut()
+					true
+				}
+				else -> false
+			}
+		}
 
 		// Carga la pantalla de chats por defecto, si no hay un estado anterior
 		if (savedInstanceState == null) {

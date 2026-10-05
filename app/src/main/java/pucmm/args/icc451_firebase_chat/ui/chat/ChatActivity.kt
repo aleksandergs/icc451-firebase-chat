@@ -34,7 +34,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 		messagesAdapter = MessagesAdapter(viewModel.currentUserId)
 
 		binding.messagesRecyclerView.adapter = messagesAdapter
-		binding.backButton.setOnClickListener { finish() }
+		binding.toolbar.setNavigationOnClickListener { finish() }
 		binding.sendButton.setOnClickListener { sendMessage() }
 		binding.messageEditText.setOnEditorActionListener { _, actionId, _ ->
 			if (actionId == EditorInfo.IME_ACTION_SEND) {
@@ -55,7 +55,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 	}
 
 	private fun render(state: ChatUiState) {
-		binding.chatTitleText.text = state.nickname
+		binding.toolbar.title = state.nickname
 		messagesAdapter.submitList(state.messages)
 		binding.loadingSpinner.visibility = if (state.isLoading) android.view.View.VISIBLE else android.view.View.GONE
 		if (state.messages.isNotEmpty()) {
