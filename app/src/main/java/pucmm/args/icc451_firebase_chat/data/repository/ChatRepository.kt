@@ -1,78 +1,95 @@
 package pucmm.args.icc451_firebase_chat.data.repository
 
-import kotlinx.coroutines.delay
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import pucmm.args.icc451_firebase_chat.data.model.Chat
 import pucmm.args.icc451_firebase_chat.data.model.Message
-import pucmm.args.icc451_firebase_chat.data.model.MessageType
 import pucmm.args.icc451_firebase_chat.utils.EnumUtils.messageType
-import kotlin.time.Duration.Companion.milliseconds
+class ChatRepository(
+	private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
+) {
 
-class ChatRepository {
+	// chats/{uidA_uidB}
+	private val chatsCollection get() = firestore.collection("chats")
 
-	private val chats = mutableListOf<Chat>()
-	private val messages = mutableListOf<Message>()
+	// el ID del chat corresponde a userA_id + '_' + userB_id, donde los user_id estan ordenados
+	// permitiendo que el id del chat sea determinista entre los 2 usuarios
+	fun chatIdOf(userId: String, otherUserId: String): String =
+		listOf(userId, otherUserId).sorted().joinToString("_")
 
-	init {
-		val time = System.currentTimeMillis()
-		chats += Chat("1", setOf("1", "2"), mapOf("1" to time, "2" to time),
-			"World", time, "2")
-		chats += Chat("2", setOf("1", "3"), mapOf("1" to time, "3" to time),
-			"Slim Shady", time, "3")
-		chats += Chat("3", setOf("1", "4"), mapOf("1" to time, "4" to time),
-			"SAHUR", time, "4")
-
-		addMessage(chats[0], "1", "Hello")
-		addMessage(chats[0], "2", "World")
-		addMessage(chats[1], "1", "Bruh")
-		addMessage(chats[1], "3", "Slim Shady")
-		addMessage(chats[2], "1", "TUNGTUNGTUNGTUNG")
-		addMessage(chats[2], "4", "SAHUR")
+	// Los chats se actualizan en tiempo real
+	fun getChats(userId: String): Flow<List<Chat>> = callbackFlow {
+		// Obtenemos el chat del usuario actual
+		val registration = chatsCollection.whereArrayContains("members", userId)
+			.addSnapshotListener { snapshot, error ->
+				if (error != null) {
+					close(error)
+					return@addSnapshotListener
+				}
+				// Un chat sin mensajes es un draft, así que no se lista
+				val chats = snapshot?.documents.orEmpty().mapNotNull { it.toChat() }
+					.sortedByDescending { it.lastMessageTimestamp }
+				trySend(chats)
+			}
+		awaitClose { registration.remove() }
 	}
 
-	suspend fun getChats(userId: String): List<Chat> {
-		delay(200.milliseconds)
-		return chats.filter { chat -> userId in chat.membersIDs }.sortedByDescending { it.lastMessageTimestamp }
-	}
-
-	suspend fun getMessages(chatId: String): List<Message> {
-		delay(200.milliseconds)
-		return messages.filter { it.chatId == chatId }.sortedBy { it.timestamp }
+	// Los mensajes de un chat se actualizan en tiempo real
+	fun getMessages(chatId: String): Flow<List<Message>> = callbackFlow {
+		val registration = messagesOf(chatId)
+			.orderBy("timestamp")
+			.addSnapshotListener { snapshot, error ->
+				if (error != null) {
+					close(error)
+					return@addSnapshotListener
+				}
+				trySend(snapshot?.documents.orEmpty().mapNotNull { it.toMessage() })
+			}
+		awaitClose { registration.remove() }
 	}
 
 	suspend fun getOrCreateChat(userId: String, otherUserId: String): String {
-		delay(200.milliseconds)
-		val existing = chats.firstOrNull { it.membersIDs == setOf(userId, otherUserId) }
-		if (existing != null) return existing.id
-
-		val time = System.currentTimeMillis()
-		val chat = Chat(id = (chats.size + 1).toString(), membersIDs = setOf(userId, otherUserId),
-			lastReadTimestamps = mapOf(userId to time, otherUserId to 0L), lastMessage = "",
-			lastMessageTimestamp = 0L, lastMessageUserId = "",
-		)
-		chats += chat
-		return chat.id
-	}
-
-	fun deleteChatIfEmpty(chatId: String) {
-		if (messages.none { it.chatId == chatId }) {
-			chats.removeAll { it.id == chatId }
+		val chatId = chatIdOf(userId, otherUserId)
+		val chatRef = chatsCollection.document(chatId)
+		if (!chatRef.get().await().exists()) {
+			val chat = Chat(id = chatId, membersIDs = setOf(userId, otherUserId),
+				lastReadTimestamps = mapOf(userId to 0L, otherUserId to 0L), lastMessage = "",
+				lastMessageTimestamp = 0L, lastMessageUserId = "",
+			)
+			chatRef.set(chat.toMap()).await()
 		}
+		return chatId
 	}
 
 	suspend fun sendMessage(chatId: String, senderId: String, text: String, imageURL: String? = null): Message {
-		delay(200.milliseconds)
-		return addMessage(chats.first { it.id == chatId }, senderId, text, imageURL)
-	}
+		require(text.isNotBlank() || imageURL != null) { "Los mensajes deben tener texto o imagen" }
 
-	private fun addMessage(chat: Chat, senderId: String, text: String, imageURL: String? = null): Message {
-		val type = messageType(text, imageURL)
-		val message = Message((messages.size + 1).toString(), chat.id, senderId, text,
-			type, imageURL, System.currentTimeMillis())
-		messages += message
+		val chatRef = chatsCollection.document(chatId)
+		val messageRef = messagesOf(chatId).document()
+		val timestamp = System.currentTimeMillis()
+		val message = Message(messageRef.id, chatId, senderId, text, messageType(text, imageURL), imageURL, timestamp)
 
-		val index = chats.indexOfFirst { it.id == chat.id }
-		if (index != -1)
-			chats[index] = chats[index].copy(lastMessage = text, lastMessageTimestamp = message.timestamp, lastMessageUserId = senderId)
+		val batch = firestore.batch()
+		batch.set(messageRef, message.toMap())
+		batch.set(chatRef, mapOf("lastMessage" to text, "lastMessageTimestamp" to timestamp,
+			"lastMessageUserId" to senderId,), SetOptions.merge())
+		batch.commit().await()
+
 		return message
 	}
+
+	// Al salir de la pantalla de chat se borra el chat de draft si nunca recibió un mensaje
+	suspend fun deleteChatIfEmpty(chatId: String) {
+		val chatRef = chatsCollection.document(chatId)
+		val messages = messagesOf(chatId).limit(1).get().await()
+		if (messages.isEmpty) chatRef.delete().await()
+	}
+
+	// chats/{uidA_uidB}/messages/{messageId}
+	private fun messagesOf(chatId: String) =
+		chatsCollection.document(chatId).collection("messages")
 }

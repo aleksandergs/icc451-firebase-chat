@@ -1,6 +1,7 @@
 package pucmm.args.icc451_firebase_chat.ui.main.chats
 
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.Chat451App
 import pucmm.args.icc451_firebase_chat.R
@@ -27,20 +28,40 @@ class ChatsViewModel(
 	private val currentUserId: String = Chat451App.authRepository.currentUserId,
 ) : BaseViewModel<ChatsUiState>(ChatsUiState()) {
 
-	fun loadChats() {
+	// Evita abrir varios listeners si la pantalla se reanuda o se reintenta
+	private var observing = false
+
+	// Los chats llegan en tiempo real, así que se observan una sola vez
+	fun observeChats() {
+		if (observing) return
+		observing = true
+		updateState { it.copy(isLoading = true, errorMessage = null) }
+
 		viewModelScope.launch {
-			updateState { it.copy(isLoading = true, errorMessage = null) }
-			try {
-				val chats = chatRepository.getChats(currentUserId).map { chat ->
-					val otherUserId = chat.membersIDs.firstOrNull { it != currentUserId }.orEmpty()
-					val nickname = userRepository.getUser(otherUserId)?.nickname
-					ChatItem(otherUserId = otherUserId, nickname = nickname.orEmpty(),
-						lastMessage = chat.lastMessage, timestamp = chat.lastMessageTimestamp)
+			chatRepository.getChats(currentUserId)
+				.catch {
+					// Permite volver a intentar con el botón de reintentar
+					observing = false
+					updateState { it.copy(isLoading = false, errorMessage = R.string.network_error) }
 				}
-				updateState { it.copy(chats = chats, isLoading = false) }
-			} catch (e: Exception) {
-				updateState { it.copy(isLoading = false, errorMessage = R.string.network_error) }
-			}
+				.collect { chats ->
+					val items = chats.map { chat ->
+						val otherUserId = chat.membersIDs.firstOrNull { it != currentUserId }.orEmpty()
+						ChatItem(otherUserId = otherUserId, nickname = nicknameOf(otherUserId),
+							lastMessage = chat.lastMessage, timestamp = chat.lastMessageTimestamp)
+					}
+					updateState { it.copy(chats = items, isLoading = false) }
+				}
 		}
+	}
+
+	// El nombre del otro usuario se pide una sola vez por chat
+	private val nicknames = mutableMapOf<String, String>()
+
+	private suspend fun nicknameOf(userId: String): String {
+		nicknames[userId]?.let { return it }
+		val nickname = userRepository.getUser(userId)?.nickname.orEmpty()
+		nicknames[userId] = nickname
+		return nickname
 	}
 }

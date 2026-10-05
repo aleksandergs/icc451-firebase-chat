@@ -19,13 +19,9 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>() {
 
 	override fun setUpViews() {
 		binding.chatsRecyclerView.adapter = chatsAdapter
-		binding.retryButton.setOnClickListener { viewModel.loadChats() }
+		binding.retryButton.setOnClickListener { viewModel.observeChats() }
+		viewModel.observeChats()
 		collectWhileStarted(viewModel.uiState) { render(it) }
-	}
-
-	override fun onStart() {
-		super.onStart()
-		viewModel.loadChats()
 	}
 
 	private fun render(state: ChatsUiState) {

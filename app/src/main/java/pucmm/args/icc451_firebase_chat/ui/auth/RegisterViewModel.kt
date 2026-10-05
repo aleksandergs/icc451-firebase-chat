@@ -3,9 +3,9 @@ package pucmm.args.icc451_firebase_chat.ui.auth
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.Chat451App
-import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
+import pucmm.args.icc451_firebase_chat.data.repository.AuthResult
 import pucmm.args.icc451_firebase_chat.data.repository.UserRepository
 import pucmm.args.icc451_firebase_chat.ui.base.BaseViewModel
 import pucmm.args.icc451_firebase_chat.utils.ValidationUtils
@@ -66,12 +66,15 @@ class RegisterViewModel(
 			updateState { it.copy(isLoading = true, errorMessage = null) }
 			val nickname = registerState.nickname.trim()
 			val email = registerState.email.trim()
-			val success = authRepository.register(email, registerState.password)
-			if (success) {
-				userRepository.saveUser(User(nickname = nickname, email = email))
+			when (val result = authRepository.register(email, registerState.password)) {
+				is AuthResult.Success -> {
+					// El usuario se guarda con el uid que Firebase acaba de crear
+					userRepository.saveUser(User(authRepository.currentUserId, nickname, email))
+					updateState { it.copy(isLoading = false, isRegistered = true) }
+				}
+				is AuthResult.Failure ->
+					updateState { it.copy(isLoading = false, errorMessage = result.messageRes) }
 			}
-			updateState { it.copy(isLoading = false, isRegistered = success,
-				errorMessage = if (success) null else R.string.unknown_error) }
 		}
 	}
 }

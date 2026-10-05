@@ -3,8 +3,8 @@ package pucmm.args.icc451_firebase_chat.ui.auth
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.Chat451App
-import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
+import pucmm.args.icc451_firebase_chat.data.repository.AuthResult
 import pucmm.args.icc451_firebase_chat.ui.base.BaseViewModel
 import pucmm.args.icc451_firebase_chat.utils.ValidationUtils
 
@@ -41,9 +41,12 @@ class LoginViewModel(
 
 		viewModelScope.launch {
 			updateState { it.copy(isLoading = true, credentialsError = null) }
-			val success = authRepository.signIn(loginState.email.trim(), loginState.password)
-			updateState { it.copy(isLoading = false, isLoggedIn = success,
-				credentialsError = if (success) null else R.string.invalid_credentials_error) }
+			when (val result = authRepository.signIn(loginState.email.trim(), loginState.password)) {
+				is AuthResult.Success ->
+					updateState { it.copy(isLoading = false, isLoggedIn = true) }
+				is AuthResult.Failure ->
+					updateState { it.copy(isLoading = false, credentialsError = result.messageRes) }
+			}
 		}
 	}
 }

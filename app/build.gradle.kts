@@ -1,5 +1,6 @@
 plugins {
 	alias(libs.plugins.android.application)
+	id("com.google.gms.google-services")
 }
 
 android {
@@ -43,6 +44,13 @@ dependencies {
 	implementation(libs.androidx.lifecycle.livedata)
 	implementation(libs.androidx.fragment.ktx)
 	implementation(libs.coil)
+	implementation(libs.kotlinx.coroutines.play.services)
+	implementation(platform(libs.firebase.bom))
+	implementation(libs.firebase.auth)
+	implementation(libs.firebase.firestore)
+	implementation(libs.firebase.messaging)
+	implementation(libs.firebase.storage)
+
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.appcompat)

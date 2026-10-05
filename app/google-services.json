@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150897990355",
+    "project_id": "icc451-chat",
+    "storage_bucket": "icc451-chat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150897990355:android:9ba31959229cf7696f5226",
+        "android_client_info": {
+          "package_name": "pucmm.args.icc451_firebase_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqgflgeOSfo5l7ogIZE4N-8apf4vjZ0VM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

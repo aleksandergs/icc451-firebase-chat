@@ -98,7 +98,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 
 	private fun sendMessage() {
 		// El ViewModel avisa con un error si no hay ni texto ni imagen
-		viewModel.sendMessage(binding.messageEditText.text?.toString().orEmpty(), draftImageUri?.toString(),)
+		viewModel.sendMessage(binding.messageEditText.text?.toString().orEmpty(), draftImageUri?.toString())
 		draftImageUri = null
 		renderDraftImage()
 		binding.messageEditText.text?.clear()
