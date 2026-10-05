@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.databinding.ItemUserBinding
 
-class UsersAdapter : Adapter<UsersAdapter.UserViewHolder>() {
+class UsersAdapter(
+	private val onUserClick: (User) -> Unit,
+) : Adapter<UsersAdapter.UserViewHolder>() {
 
 	private var users: List<User> = emptyList()
 
@@ -18,7 +20,7 @@ class UsersAdapter : Adapter<UsersAdapter.UserViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
 		val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-		return UserViewHolder(binding)
+		return UserViewHolder(binding, onUserClick)
 	}
 
 	override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -29,11 +31,13 @@ class UsersAdapter : Adapter<UsersAdapter.UserViewHolder>() {
 
 	class UserViewHolder(
 		private val binding: ItemUserBinding,
+		private val onUserClick: (User) -> Unit,
 	) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(user: User) {
 			binding.nickText.text = user.nickname
 			binding.emailText.text = user.email
+			binding.root.setOnClickListener { onUserClick(user) }
 		}
 	}
 }

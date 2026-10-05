@@ -24,6 +24,7 @@
 
         <activity android:name=".ui.main.MainActivity" android:exported="false" />
         <activity android:name=".ui.auth.AuthActivity" android:exported="false" />
+        <activity android:name=".ui.chat.ChatActivity" android:exported="false" />
     </application>
 
 </manifest>

@@ -29,8 +29,7 @@ object ChatRepository {
 
 	suspend fun getChats(userId: Long): List<Chat> {
 		delay(200.milliseconds)
-		return chats.filter { chat -> userId in chat.membersIDs && messages.any { it.chatId == chat.id } }
-			.sortedByDescending { it.lastMessageTimestamp }
+		return chats.filter { chat -> userId in chat.membersIDs }.sortedByDescending { it.lastMessageTimestamp }
 	}
 
 	suspend fun getMessages(chatId: Long): List<Message> {
@@ -50,6 +49,12 @@ object ChatRepository {
 		)
 		chats += chat
 		return chat.id
+	}
+
+	fun deleteChatIfEmpty(chatId: Long) {
+		if (messages.none { it.chatId == chatId }) {
+			chats.removeAll { it.id == chatId }
+		}
 	}
 
 	fun sendMessage(chat: Chat, senderId: Long, text: String): Message {

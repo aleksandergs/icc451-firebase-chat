@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import pucmm.args.icc451_firebase_chat.databinding.FragmentChatsBinding
 import pucmm.args.icc451_firebase_chat.ui.base.BaseFragment
+import pucmm.args.icc451_firebase_chat.ui.chat.ChatActivity
 
 class ChatsFragment : BaseFragment<FragmentChatsBinding>() {
 
@@ -32,6 +33,6 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding>() {
 	}
 
 	private fun openChat(chat: ChatItem) {
-		// cambia a chatActivity
+		ChatActivity.start(requireContext(), chat.otherUserId)
 	}
 }

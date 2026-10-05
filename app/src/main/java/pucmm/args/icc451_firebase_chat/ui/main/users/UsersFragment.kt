@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.databinding.FragmentUsersBinding
 import pucmm.args.icc451_firebase_chat.ui.base.BaseFragment
+import pucmm.args.icc451_firebase_chat.ui.chat.ChatActivity
 
 class UsersFragment : BaseFragment<FragmentUsersBinding>() {
 
 	private val viewModel: UsersViewModel by viewModels()
-	private val userAdapter = UsersAdapter()
+	private val userAdapter = UsersAdapter { user -> openChat(user) }
 
 	override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) = FragmentUsersBinding.inflate(inflater, container, false)
 
@@ -23,5 +25,9 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
 	private fun render(state: UsersUiState) {
 		userAdapter.submitList(state.users)
 		binding.loadingSpinner.visibility = if (state.isLoading || state.users.isEmpty()) View.VISIBLE else View.GONE
+	}
+
+	private fun openChat(user: User) {
+		ChatActivity.start(requireContext(), user.id)
 	}
 }

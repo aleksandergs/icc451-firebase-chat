@@ -7,7 +7,7 @@ class AuthRepository {
 
 	val currentUserId: Long = 1L
 
-	fun isUserLoggedIn(): Boolean = false
+	fun isUserLoggedIn(): Boolean = true
 
 	suspend fun signIn(email: String, password: String): Boolean {
 		delay(200.milliseconds)
