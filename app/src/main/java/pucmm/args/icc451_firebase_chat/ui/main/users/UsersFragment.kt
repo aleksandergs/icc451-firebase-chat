@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.databinding.FragmentUsersBinding
 import pucmm.args.icc451_firebase_chat.ui.base.BaseFragment
@@ -18,13 +19,22 @@ class UsersFragment : BaseFragment<FragmentUsersBinding>() {
 
 	override fun setUpViews() {
 		binding.usersRecyclerView.adapter = userAdapter
+		binding.retryButton.setOnClickListener { viewModel.loadUsers() }
 		viewModel.loadUsers()
 		collectWhileStarted(viewModel.uiState) { render(it) }
 	}
 
 	private fun render(state: UsersUiState) {
 		userAdapter.submitList(state.users)
-		binding.loadingSpinner.visibility = if (state.isLoading || state.users.isEmpty()) View.VISIBLE else View.GONE
+		binding.loadingSpinner.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+
+		val stateMessage = when {
+			state.errorMessage != null -> state.errorMessage
+			!state.isLoading && state.users.isEmpty() -> R.string.empty_users
+			else -> null
+		}
+		val retryButton = if (state.errorMessage != null) binding.retryButton else null
+		showStateMessage(binding.emptyState, binding.emptyText, stateMessage, retryButton)
 	}
 
 	private fun openChat(user: User) {

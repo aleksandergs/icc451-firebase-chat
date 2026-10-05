@@ -2,6 +2,7 @@ package pucmm.args.icc451_firebase_chat.ui.auth
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import pucmm.args.icc451_firebase_chat.Chat451App
 import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
 import pucmm.args.icc451_firebase_chat.ui.base.BaseViewModel
@@ -18,7 +19,7 @@ data class LoginUiState(
 )
 
 class LoginViewModel(
-	private val authRepository: AuthRepository = AuthRepository(),
+	private val authRepository: AuthRepository = Chat451App.authRepository,
 ) : BaseViewModel<LoginUiState>(LoginUiState()) {
 
 	fun onEmailChange(email: String) {

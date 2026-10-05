@@ -4,11 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
+import pucmm.args.icc451_firebase_chat.Chat451App
 
 fun AppCompatActivity.logOut() {
 	lifecycleScope.launch {
-		AuthRepository().signOut()
+		Chat451App.authRepository.signOut()
 
 		val intent = Intent(this@logOut, AuthActivity::class.java)
 		// Vacia el stack de actividades para que el usuario no pueda acceder sin iniciar sesión nuevamente

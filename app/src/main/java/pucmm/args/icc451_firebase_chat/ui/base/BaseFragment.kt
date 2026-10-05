@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -42,5 +43,16 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 				flow.collect { render(it) }
 			}
 		}
+	}
+
+	//
+	protected fun showStateMessage(container: View, text: TextView, stateMessage: Int?, retryButton: View?) {
+		if (stateMessage == null) {
+			container.visibility = View.GONE
+			return
+		}
+		container.visibility = View.VISIBLE
+		text.setText(stateMessage)
+		retryButton?.visibility = View.VISIBLE
 	}
 }

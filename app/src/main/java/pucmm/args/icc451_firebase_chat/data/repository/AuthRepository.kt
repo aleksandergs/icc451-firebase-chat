@@ -5,7 +5,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class AuthRepository {
 
-	val currentUserId: Long = 1L
+	val currentUserId: String = "1"
 
 	fun isUserLoggedIn(): Boolean = true
 

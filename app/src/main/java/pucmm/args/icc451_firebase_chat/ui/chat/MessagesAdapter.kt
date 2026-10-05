@@ -7,17 +7,13 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.google.android.material.color.MaterialColors
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import pucmm.args.icc451_firebase_chat.data.model.Message
 import pucmm.args.icc451_firebase_chat.databinding.ItemMessageBinding
+import pucmm.args.icc451_firebase_chat.utils.TimeUtils
 
 class MessagesAdapter(
-	private val currentUserId: Long,
+	private val currentUserId: String,
 ) : Adapter<MessagesAdapter.MessageViewHolder>() {
-
-	private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
 	private var messages: List<Message> = emptyList()
 
@@ -28,7 +24,7 @@ class MessagesAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
 		val binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-		return MessageViewHolder(binding, currentUserId, timeFormat)
+		return MessageViewHolder(binding, currentUserId)
 	}
 
 	override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
@@ -39,13 +35,12 @@ class MessagesAdapter(
 
 	class MessageViewHolder(
 		private val binding: ItemMessageBinding,
-		private val currentUserId: Long,
-		private val timeFormat: SimpleDateFormat,
+		private val currentUserId: String,
 	) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(message: Message) {
 			binding.messageText.text = message.text
-			binding.timeText.text = timeFormat.format(Date(message.timestamp))
+			binding.timeText.text = TimeUtils.formatTimestamp(message.timestamp)
 
 			// Determina el color y la posicion del mensaje segun si es del usuario o no
 			val isMine = message.senderId == currentUserId

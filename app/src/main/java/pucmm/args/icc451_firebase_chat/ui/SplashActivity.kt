@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
+import pucmm.args.icc451_firebase_chat.Chat451App
 import pucmm.args.icc451_firebase_chat.databinding.ActivitySplashBinding
 import pucmm.args.icc451_firebase_chat.ui.auth.AuthActivity
 import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
@@ -29,8 +29,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 	}
 
 	private fun goNextScreen() {
-		val authRepository = AuthRepository()
-		val destination = if (authRepository.isUserLoggedIn()) {
+		val destination = if (Chat451App.authRepository.isUserLoggedIn()) {
 			MainActivity::class.java
 		} else {
 			AuthActivity::class.java

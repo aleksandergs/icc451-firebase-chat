@@ -2,6 +2,7 @@ package pucmm.args.icc451_firebase_chat.ui.auth
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import pucmm.args.icc451_firebase_chat.Chat451App
 import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.data.model.User
 import pucmm.args.icc451_firebase_chat.data.repository.AuthRepository
@@ -24,8 +25,8 @@ data class RegisterUiState(
 )
 
 class RegisterViewModel(
-	private val authRepository: AuthRepository = AuthRepository(),
-	private val userRepository: UserRepository = UserRepository(),
+	private val authRepository: AuthRepository = Chat451App.authRepository,
+	private val userRepository: UserRepository = Chat451App.userRepository,
 ) : BaseViewModel<RegisterUiState>(RegisterUiState()) {
 
 	fun onNicknameChange(nickname: String) {

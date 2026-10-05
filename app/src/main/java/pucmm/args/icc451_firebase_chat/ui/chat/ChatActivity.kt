@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.activity.viewModels
 import pucmm.args.icc451_firebase_chat.databinding.ActivityChatBinding
 import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
@@ -15,7 +17,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 	companion object {
 		const val EXTRA_OTHER_USER_ID = "extra_other_user_id"
 
-		fun start(context: Context, otherUserId: Long) {
+		fun start(context: Context, otherUserId: String) {
 			val intent = Intent(context, ChatActivity::class.java)
 			intent.putExtra(EXTRA_OTHER_USER_ID, otherUserId)
 			context.startActivity(intent)
@@ -30,7 +32,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		val otherUserId = intent.getLongExtra(EXTRA_OTHER_USER_ID, 0L)
+		val otherUserId = intent.getStringExtra(EXTRA_OTHER_USER_ID).orEmpty()
 		messagesAdapter = MessagesAdapter(viewModel.currentUserId)
 
 		binding.messagesRecyclerView.adapter = messagesAdapter
@@ -57,9 +59,14 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 	private fun render(state: ChatUiState) {
 		binding.toolbar.title = state.nickname
 		messagesAdapter.submitList(state.messages)
-		binding.loadingSpinner.visibility = if (state.isLoading) android.view.View.VISIBLE else android.view.View.GONE
+		binding.loadingSpinner.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 		if (state.messages.isNotEmpty()) {
 			binding.messagesRecyclerView.scrollToPosition(state.messages.lastIndex)
+		}
+
+		state.errorMessage?.let { stateMessage ->
+			Toast.makeText(this, stateMessage, Toast.LENGTH_LONG).show()
+			viewModel.onErrorShown()
 		}
 	}
 }

@@ -19,6 +19,9 @@
     <string name="action_back">Volver</string>
     <string name="hint_message">Escribe un mensaje</string>
     <string name="action_send">Enviar</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="empty_chats">No tienes conversaciones todavía</string>
+    <string name="empty_users">No hay usuarios disponibles</string>
     <string name="email_required_error">El correo electrónico es obligatorio</string>
     <string name="email_invalid_error">Ingresa un correo electrónico válido</string>
     <string name="password_required_error">La contraseña es obligatoria</string>
