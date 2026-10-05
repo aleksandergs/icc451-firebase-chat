@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.databinding.ActivityChatBinding
 import pucmm.args.icc451_firebase_chat.databinding.DialogImagePreviewBinding
+import pucmm.args.icc451_firebase_chat.notifications.Notifications
 import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
 import pucmm.args.icc451_firebase_chat.utils.MediaUtils
 
@@ -70,6 +71,9 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 
 		val otherUserId = intent.getStringExtra(EXTRA_OTHER_USER_ID).orEmpty()
 		messagesAdapter = MessagesAdapter(viewModel.currentUserId) { imageUrl -> showImagePreview(imageUrl) }
+
+		// Si había una notificación de este chat, ya no hace falta
+		Notifications.cancel(this, otherUserId)
 
 		binding.messagesRecyclerView.adapter = messagesAdapter
 		binding.toolbar.setNavigationOnClickListener { finish() }
