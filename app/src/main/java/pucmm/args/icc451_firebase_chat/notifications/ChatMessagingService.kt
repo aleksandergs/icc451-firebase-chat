@@ -23,7 +23,10 @@ class ChatMessagingService : FirebaseMessagingService() {
 		val data = message.data
 		val title = data["nickname"] ?: message.notification?.title ?: getString(R.string.app_name)
 		val body = data["text"] ?: message.notification?.body.orEmpty()
+		val otherUserId = data["otherUserId"].orEmpty()
 
-		Notifications.showMessage(this, title, body, data["otherUserId"].orEmpty())
+		if (otherUserId.isNotBlank()) {
+			Notifications.showMessage(this, title, body, otherUserId)
+		}
 	}
 }

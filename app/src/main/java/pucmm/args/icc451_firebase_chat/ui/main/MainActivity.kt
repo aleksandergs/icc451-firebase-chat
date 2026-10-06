@@ -9,8 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import pucmm.args.icc451_firebase_chat.Chat451App
 import pucmm.args.icc451_firebase_chat.R
 import pucmm.args.icc451_firebase_chat.databinding.ActivityMainBinding
+import pucmm.args.icc451_firebase_chat.notifications.Notifications
 import pucmm.args.icc451_firebase_chat.ui.auth.logOut
 import pucmm.args.icc451_firebase_chat.ui.base.BaseActivity
 import pucmm.args.icc451_firebase_chat.ui.main.chats.ChatsFragment
@@ -29,6 +31,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 		super.onCreate(savedInstanceState)
 
 		requestNotificationPermission()
+
+		Notifications.createChannel(this)
+
+		val currentUserId = Chat451App.authRepository.currentUserId
+		com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+			.addOnCompleteListener { task ->
+				if (task.isSuccessful && task.result != null) {
+					val currentToken = task.result
+
+					// Guardar o fusionar el token en el documento de este usuario
+					com.google.firebase.firestore.FirebaseFirestore.getInstance()
+						.collection("users")
+						.document(currentUserId)
+						.set(
+							mapOf("fcmToken" to currentToken),
+							com.google.firebase.firestore.SetOptions.merge()
+						)
+				}
+			}
 
 		binding.toolbar.setOnMenuItemClickListener { item ->
 			when (item.itemId) {
